@@ -10,9 +10,11 @@
     android:orientation="vertical"
     android:gravity="bottom">
 
-    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+    <ImageView android:layout_width="100dp" android:layout_height="100dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@android:drawable/sym_def_app_icon" android:id="@+id/imageView" />
+        android:paddingBottom="10dp"
+        android:layout_gravity="center"
+        android:src="@mipmap/man_default" android:id="@+id/imageView" />
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing" android:text="Android Studio"
