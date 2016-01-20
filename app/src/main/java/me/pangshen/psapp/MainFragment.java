@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -120,15 +122,19 @@ public class MainFragment extends Fragment {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             holder.tx.setText(data.get(position).getTitle());
-
+            holder.tx_desc.setText(data.get(position).getDescription());
+            ImageLoader.getInstance().displayImage(data.get(position).getPicUrl(),holder.img,MyApplication.getDisplayImageOptions(false,0));
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tx;
-
+            TextView tx_desc;
+            ImageView img;
             public ViewHolder(View itemView, int itemType) {
                 super(itemView);
                 tx = (TextView) itemView.findViewById(R.id.main_page_item_text);
+                tx_desc = (TextView) itemView.findViewById(R.id.main_page_item_text_desc);
+                img = (ImageView) itemView.findViewById(R.id.main_page_item_img);
             }
         }
     }
