@@ -7,8 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -123,15 +125,24 @@ public class MainFragment extends Fragment {
         public void onBindViewHolder(ViewHolder holder, int position) {
             holder.tx.setText(data.get(position).getTitle());
             holder.tx_desc.setText(data.get(position).getDescription());
-            ImageLoader.getInstance().displayImage(data.get(position).getPicUrl(),holder.img,MyApplication.getDisplayImageOptions(false,0));
+            ImageLoader.getInstance().displayImage(data.get(position).getPicUrl(), holder.img, MyApplication.getDisplayImageOptions(false, 0));
+            holder.main_page_item.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    return true;
+                }
+            });
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
+            FrameLayout main_page_item;
             TextView tx;
             TextView tx_desc;
             ImageView img;
             public ViewHolder(View itemView, int itemType) {
                 super(itemView);
+                main_page_item =  (FrameLayout)itemView.findViewById(R.id.main_page_item);
                 tx = (TextView) itemView.findViewById(R.id.main_page_item_text);
                 tx_desc = (TextView) itemView.findViewById(R.id.main_page_item_text_desc);
                 img = (ImageView) itemView.findViewById(R.id.main_page_item_img);
