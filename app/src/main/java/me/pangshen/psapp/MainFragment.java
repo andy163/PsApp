@@ -1,10 +1,14 @@
 package me.pangshen.psapp;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,12 +43,15 @@ import java.util.List;
 import java.util.Map;
 
 import me.pangshen.psapp.model.WXhot;
+import me.pangshen.psapp.util.SharedPreferencesUtil;
 
 public class MainFragment extends Fragment {
 
     private static final String TAG = MainFragment.class.getSimpleName();
     private List<WXhot> data = new ArrayList<WXhot>();
     private MainFragmentAdapter mainFragmentAdapter;
+    private final  static  int num = 100;
+    private  final static  String key = "WXhotList";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.main_page, container, false);
@@ -54,24 +61,27 @@ public class MainFragment extends Fragment {
     }
 
     private void getData(Context context) {
+        String string  = SharedPreferencesUtil.getInstance(getContext()).getSp().getString(key,null);
+        if (!TextUtils.isEmpty(string)){
+            try {
+                Log.d(TAG, "has cache.");
+                JSONObject cacheJSONObject = new JSONObject(string);
+                prepareData(cacheJSONObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         RequestQueue mQueue = Volley.newRequestQueue(context);
-        String requesetUrl= String.format("http://apis.baidu.com/txapi/weixin/wxhot?num=%d",10);
+        String requesetUrl= String.format("http://apis.baidu.com/txapi/weixin/wxhot?num=%d", num);
+        Log.d(TAG, "requesetUrl=" + requesetUrl);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,requesetUrl,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-                        for (int i = 0; i < 10; i++) {
-                            try {
-                                String str = response.getString(i+"");
-                                WXhot wxhot = new Gson().fromJson(str,WXhot.class);
-                                data.add(wxhot);
-                                Log.d(TAG, wxhot.toString());
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        mainFragmentAdapter.notifyDataSetChanged();
+                        Log.d(TAG, "response="+response.toString());
+                        SharedPreferencesUtil.getInstance(getContext()).getEditor().putString("WXhotList",response.toString()).commit();
+                        prepareData(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -87,6 +97,20 @@ public class MainFragment extends Fragment {
             }
         };
         mQueue.add(jsonObjectRequest);
+    }
+
+    private  void prepareData(JSONObject response){
+        for (int i = 0; i < num; i++) {
+            try {
+                String str = response.getString(i+"");
+                WXhot wxhot = new Gson().fromJson(str,WXhot.class);
+                data.add(wxhot);
+                Log.d(TAG, wxhot.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        mainFragmentAdapter.notifyDataSetChanged();
     }
 
     private void initRecleView(View rootView) {
@@ -122,31 +146,42 @@ public class MainFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(ViewHolder holder, final int position) {
             holder.tx.setText(data.get(position).getTitle());
             holder.tx_desc.setText(data.get(position).getDescription());
             ImageLoader.getInstance().displayImage(data.get(position).getPicUrl(), holder.img, MyApplication.getDisplayImageOptions(false, 0));
-            holder.main_page_item.setOnTouchListener(new View.OnTouchListener() {
+            holder.main_page_item.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onTouch(View v, MotionEvent event) {
-
-                    return true;
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("urlData",data.get(position).getUrl());
+                    jumpTo(DetailActivity.class, bundle);
                 }
             });
+
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            FrameLayout main_page_item;
+            CardView main_page_item;
             TextView tx;
             TextView tx_desc;
             ImageView img;
             public ViewHolder(View itemView, int itemType) {
                 super(itemView);
-                main_page_item =  (FrameLayout)itemView.findViewById(R.id.main_page_item);
-                tx = (TextView) itemView.findViewById(R.id.main_page_item_text);
-                tx_desc = (TextView) itemView.findViewById(R.id.main_page_item_text_desc);
-                img = (ImageView) itemView.findViewById(R.id.main_page_item_img);
+                main_page_item =  (CardView)itemView.findViewById(R.id.news_list_card_view);
+                tx = (TextView) itemView.findViewById(R.id.question_title);
+                tx_desc = (TextView) itemView.findViewById(R.id.daily_title);
+                img = (ImageView) itemView.findViewById(R.id.thumbnail_image);
             }
         }
+    }
+
+    protected void jumpTo(Class<? extends Activity> cls, Bundle args) {
+        Intent intent = new Intent(getActivity(), cls);
+        if (args != null) {
+            intent.putExtras(args);
+        }
+        startActivity(intent);
+
     }
 }

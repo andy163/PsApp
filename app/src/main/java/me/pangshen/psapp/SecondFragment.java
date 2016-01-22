@@ -68,7 +68,7 @@ public class SecondFragment extends Fragment {
 
             public ViewHolder(View itemView, int itemType) {
                 super(itemView);
-                tx = (TextView) itemView.findViewById(R.id.main_page_item_text);
+                tx = (TextView) itemView.findViewById(R.id.question_title);
             }
         }
     }
