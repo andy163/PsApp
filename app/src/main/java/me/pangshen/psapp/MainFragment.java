@@ -11,47 +11,37 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import me.pangshen.psapp.model.WXhot;
+import me.pangshen.psapp.model.WeixinHot;
 import me.pangshen.psapp.util.SharedPreferencesUtil;
+import me.pangshen.psapp.util.Util;
 
 public class MainFragment extends Fragment {
-
     private static final String TAG = MainFragment.class.getSimpleName();
-    private List<WXhot> data = new ArrayList<WXhot>();
+    private List<WeixinHot> data = new ArrayList<WeixinHot>();
     private MainFragmentAdapter mainFragmentAdapter;
     private final  static  int num = 100;
-    private  final static  String key = "WXhotList";
+    private  final static  String key = "WeixinHotList";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.main_page, container, false);
@@ -65,50 +55,51 @@ public class MainFragment extends Fragment {
         if (!TextUtils.isEmpty(string)){
             try {
                 Log.d(TAG, "has cache.");
-                JSONObject cacheJSONObject = new JSONObject(string);
-                prepareData(cacheJSONObject);
+                prepareData(string);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return;
         }
+        String key = "73c2d1b871a5883f40dc3b1d58e86e26";
         RequestQueue mQueue = Volley.newRequestQueue(context);
-        String requesetUrl= String.format("http://apis.baidu.com/txapi/weixin/wxhot?num=%d", num);
-        Log.d(TAG, "requesetUrl=" + requesetUrl);
+        final String requesetUrl=
+                Util.messageFormat("http://api.tianapi.com/wxnew/?key={0}&num={1}", key,num);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,requesetUrl,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "response="+response.toString());
-                        SharedPreferencesUtil.getInstance(getContext()).getEditor().putString("WXhotList",response.toString()).commit();
-                        prepareData(response);
+             new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        String json = response.get("newslist").toString();
+                        Log.d(TAG, "json="+json);
+                        SharedPreferencesUtil.getInstance(getContext()).getEditor().
+                                putString("WXhotList",json).commit();
+                        prepareData(json);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
+                }
+        }, new Response.ErrorListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, error.getMessage(), error);
-            } })
-        {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("apikey", Configration.APIKEY);
-                return headers;
             }
-        };
+        });
         mQueue.add(jsonObjectRequest);
     }
 
-    private  void prepareData(JSONObject response){
-        for (int i = 0; i < num; i++) {
-            try {
-                String str = response.getString(i+"");
-                WXhot wxhot = new Gson().fromJson(str,WXhot.class);
-                data.add(wxhot);
-                Log.d(TAG, wxhot.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
+    private  void prepareData(String response){
+        try {
+            List<WeixinHot> list = Util.fromJson(response,new TypeToken<List<WeixinHot>>() {
+                }.getType());
+            if (data!=null) {
+                data.clear();
+                data.addAll(list);
             }
+            Log.d(TAG, Util.toJson(list));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         mainFragmentAdapter.notifyDataSetChanged();
     }
@@ -122,9 +113,9 @@ public class MainFragment extends Fragment {
     }
 
     class MainFragmentAdapter extends RecyclerView.Adapter<MainFragmentAdapter.ViewHolder> {
-        List<WXhot> data;
+        List<WeixinHot> data;
 
-        public MainFragmentAdapter(List<WXhot> data) {
+        public MainFragmentAdapter(List<WeixinHot> data) {
             this.data = data;
         }
 

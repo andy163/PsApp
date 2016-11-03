@@ -2,8 +2,11 @@ package me.pangshen.psapp;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.util.Log;
 
+import com.baidu.apistore.sdk.ApiStoreSDK;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
@@ -24,9 +27,15 @@ import java.io.File;
  * Created by Administrator on 2016/1/14.
  */
 public class MyApplication extends Application {
+    private static final String TAG = MyApplication.class.getSimpleName();
     @Override
     public void onCreate() {
+        ApiStoreSDK.init(this, "cb206355b02faf46437e95686de39902");
         super.onCreate();
+        Configuration config = getResources().getConfiguration();
+        int smallestScreenWidth = config.smallestScreenWidthDp;
+        //这个获取出来的值，我们需要建立对应的values-sw{smallestWidth}dp文件夹进行适配
+        Log.d(TAG,"smallest width : " + smallestScreenWidth);
         initImageLoader(getApplicationContext());
     }
 

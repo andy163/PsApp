@@ -3,12 +3,11 @@ package me.pangshen.psapp.model;
 /**
  * Created by ps_an on 2016/1/17.
  */
-public class WXhot {
+public class WeixinHot {
     private String title;
     private String description;
     private String picUrl;
     private String url;
-
     public String getTitle() {
         return title;
     }
