@@ -43,7 +43,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  * This class uses the JUnit4 syntax for tests.
  * <p>
  * With the new AndroidJUnit runner you can run both JUnit3 and JUnit4 tests in a single test
- * suite. The {@link AndroidRunnerBuilder} which extends JUnit's
+ * suite. The {@link } which extends JUnit's
  * {@link AllDefaultPossibilitiesBuilder} will create a single {@link
  * TestSuite} from all tests and run them.
  */
