@@ -16,4 +16,11 @@
     <string name="div_operation_text">Div</string>
     <string name="mul_operation_text">Mul</string>
     <string name="computationError">Error</string>
+
+    <string name="enable_accessibility">打开抢红包</string>
+    <string name="disable_accessibility">关闭抢红包</string>
+    <string name="enable_notification">打开红包通知开关</string>
+    <string name= "disable_notification">关闭红包通知开关</string>
+    <string name="enable_grab_luckymoney">恭喜您！设置成功，您可以做其他事情，我会自动帮你抢红包的。</string>
+    <string name="disable_grab_luckymoney">很遗憾，您必须先打开开关。</string>
 </resources>
