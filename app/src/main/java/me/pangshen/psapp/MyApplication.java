@@ -20,6 +20,7 @@ import com.nostra13.universalimageloader.core.display.CircleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+import com.tencent.bugly.Bugly;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
@@ -33,6 +34,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         ApiStoreSDK.init(this, "cb206355b02faf46437e95686de39902");
         super.onCreate();
+        Bugly.init(getApplicationContext(), "862aaa356d", false);
         MobclickAgent.UMAnalyticsConfig umAnalyticsConfig =
                 new MobclickAgent.UMAnalyticsConfig(this,
                         "5861dd6207fe657993000cf8", "channel_id",

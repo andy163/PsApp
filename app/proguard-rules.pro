@@ -19,3 +19,5 @@
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
 }
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
