@@ -34,7 +34,7 @@ public class AutoGrabMoneyMonitorServices extends AccessibilityService {
             mLuckyClicked = false;
 
             /**
-             * for API >= 18, we use NotificationListenerService to detect the notifications
+             * for API >= 18, we use NotificationListenerService to detect the not ifications
              * below API_18 we use AccessibilityService to detect
              */
 

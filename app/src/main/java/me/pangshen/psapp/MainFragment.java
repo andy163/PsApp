@@ -36,7 +36,7 @@ import me.pangshen.psapp.model.WeixinHot;
 import me.pangshen.psapp.util.SharedPreferencesUtil;
 import me.pangshen.psapp.util.Util;
 
-public class MainFragment extends Fragment {
+public class MainFragment extends BaseFragment {
     private static final String TAG = MainFragment.class.getSimpleName();
     private List<WeixinHot> data = new ArrayList<WeixinHot>();
     private MainFragmentAdapter mainFragmentAdapter;

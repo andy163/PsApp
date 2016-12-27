@@ -32,7 +32,7 @@ import me.pangshen.psapp.model.Calculator;
  * two {@link EditText} fields and result can be obtained by pressing one of the
  * operation {@link Button}s at the bottom.
  */
-public class CalculatorActivity extends Activity {
+public class CalculatorActivity extends BaseActivity {
 
     private static final String TAG = "CalculatorActivity";
 

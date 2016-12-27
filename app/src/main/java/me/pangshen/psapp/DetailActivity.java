@@ -10,7 +10,7 @@ import android.webkit.WebView;
 /**
  * Created by Administrator on 2016/1/20.
  */
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

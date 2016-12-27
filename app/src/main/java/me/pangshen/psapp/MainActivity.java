@@ -23,7 +23,7 @@ import java.util.List;
 
 import me.pangshen.psapp.weixinredbag.RedBagActivity;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 

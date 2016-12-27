@@ -23,9 +23,10 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import me.pangshen.psapp.BaseActivity;
 import me.pangshen.psapp.R;
 
-public class RedBagActivity extends AppCompatActivity {
+public class RedBagActivity extends BaseActivity {
 
     private String TAG = "RedBagActivity";
 
@@ -89,7 +90,7 @@ public class RedBagActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         Log.i(TAG, "OnResume");
         changeLabelStatus();

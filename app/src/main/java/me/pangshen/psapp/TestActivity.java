@@ -3,7 +3,7 @@ package me.pangshen.psapp;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class TestActivity extends AppCompatActivity {
+public class TestActivity extends BaseActivity {
 
 
     @Override
